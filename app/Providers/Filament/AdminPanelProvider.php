@@ -66,6 +66,8 @@ class AdminPanelProvider extends PanelProvider
                 'warning' => Color::Orange,
             ])
             ->font('roboto')
-            ->brandName('Carent');
+            ->brandName('Carrent')
+            ->databaseNotifications();
+
     }
 }
