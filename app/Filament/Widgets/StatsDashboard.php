@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Filament\Widgets;
 
 use App\Models\Mobil;
@@ -10,9 +9,8 @@ use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 
 class StatsDashboard extends BaseWidget
 {
-    // protected ?string $heading = 'Dashboard Carent';
+    protected static ?int $sort = 1; // Urutan widget di halaman dashboard
 
-    // protected ?string $description = 'An overview of some analytics.';
 
     protected function getStats(): array
     {
@@ -20,7 +18,6 @@ class StatsDashboard extends BaseWidget
         $customer_count = Customer::count();
         $transaksi_count = Transaksi::count();
         return [
-
             Stat::make('Jumlah Mobil', $mobil_count.' Mobil')
                 ->icon('heroicon-o-truck')
                 ->description('Jumlah mobil yang tersedia')
@@ -33,7 +30,6 @@ class StatsDashboard extends BaseWidget
                 ->icon('heroicon-o-banknotes')
                 ->description('Jumlah transaksi yang terjadi')
                 ->color('warning'),
-
         ];
     }
 }

@@ -83,14 +83,6 @@ class TransaksiDetailResource extends Resource
                     ->label('Denda')
                     ->numeric()
                     ->default(0),
-
-                Select::make('status')
-                    ->label('Status')
-                    ->options([
-                        'sewa' => 'Sewa',
-                        'kembali' => 'Kembali',
-                    ])
-                    ->required(),
             ]);
     }
 
@@ -98,17 +90,16 @@ class TransaksiDetailResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('kode_transaksi')->label('Kode Transaksi'),
-                TextColumn::make('mobil.nama_mobil')->label('Nama Mobil'),
-                TextColumn::make('mobil.plat_nomor')->label('Plat Nomor'),
-                TextColumn::make('customer.nama_customer')->label('Nama Customer'),
-                TextColumn::make('customer.no_hp')->label('No. HP'),
-                TextColumn::make('tanggal_sewa')->label('Tanggal Sewa')->date(),
+                TextColumn::make('kode_transaksi')->label('Kode Transaksi')->copyable(),
+                TextColumn::make('mobil.nama_mobil')->label('Nama Mobil')->copyable(),
+                TextColumn::make('mobil.plat_nomor')->label('Plat Nomor')->copyable(),
+                TextColumn::make('customer.nama_customer')->label('Nama Customer')->copyable(),
+                TextColumn::make('customer.no_hp')->label('No. HP')->copyable(),
+                TextColumn::make('tanggal_sewa')->label('Tanggal Sewa')->date()->copyable(),
                 TextColumn::make('lama_peminjaman')->label('Durasi Sewa')->formatStateUsing(fn($state) => $state . ' hari'),
-                TextColumn::make('tanggal_kembali')->label('Tanggal Kembali')->date(),
-                TextColumn::make('total_harga')->label('Total Harga Sewa')->money('IDR', true),
-                TextColumn::make('denda')->label('Denda')->money('IDR', true),
-                TextColumn::make('status')->label('Status'),
+                TextColumn::make('tanggal_kembali')->label('Tanggal Kembali')->date()->copyable(),
+                TextColumn::make('total_harga')->label('Total Harga Sewa')->money('IDR', true)->copyable(),
+                TextColumn::make('denda')->label('Denda')->money('IDR', true)->copyable(),
             ])
             ->filters([
                 //

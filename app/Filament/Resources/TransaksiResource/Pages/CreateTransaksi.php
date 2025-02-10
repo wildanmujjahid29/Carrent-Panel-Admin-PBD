@@ -4,6 +4,7 @@ namespace App\Filament\Resources\TransaksiResource\Pages;
 
 use App\Models\Mobil;
 use Filament\Actions;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 use App\Filament\Resources\TransaksiResource;
 
@@ -58,5 +59,17 @@ class CreateTransaksi extends CreateRecord
         $data['total_harga'] = $mobil->harga * $lama_peminjaman + $denda; 
         
         return $data;
+    }
+
+    protected function getCreatedNotification(): ?Notification
+    {
+        return Notification::make()
+            ->success()
+            ->title('Sewa Mobil Berhasil')
+            ->body('Sewa mobil telah berhasil dilakukan.')
+            ->icon('heroicon-o-document-check')
+            ->color('success')
+            ->iconColor('success')
+            ->duration(5000);
     }
 }

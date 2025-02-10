@@ -11,11 +11,6 @@ class Kategori extends Model
     
     protected $guarded = [];
 
-    /**
-     * Get all of the comments for the Kategori
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function mobil(): HasMany
     {
         return $this->hasMany(Mobil::class, 'kategori_id', 'id');

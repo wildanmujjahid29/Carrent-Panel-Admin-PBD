@@ -6,10 +6,10 @@ use App\Models\Transaksi;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\DB;
 
-class DashboardChart extends ChartWidget
+class LineChart extends ChartWidget
 {
     protected static ?string $heading = 'Grafik Transaksi Tahun Ini';
-    
+    protected static ?int $sort = 2;
     protected function getData(): array
     {
         $data = Transaksi::select(

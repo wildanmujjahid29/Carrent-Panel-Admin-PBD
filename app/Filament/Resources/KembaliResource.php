@@ -10,12 +10,14 @@ use App\Models\Transaksi;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Infolists\Components\TextEntry;
 use App\Filament\Resources\KembaliResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\KembaliResource\RelationManagers;
-use Filament\Forms\Components\TextInput;
-
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\Section;
 class KembaliResource extends Resource
 {
     protected static ?string $model = Transaksi::class;
@@ -45,14 +47,14 @@ class KembaliResource extends Resource
         return $table
             ->defaultSort('kode_transaksi', 'desc')        
             ->columns([
-                TextColumn::make('kode_transaksi')->label('Kode Transaksi')->sortable('desc'),
-                TextColumn::make('mobil.nama_mobil')->label('Nama Mobil'),
-                TextColumn::make('customer.nama_customer')->label('Nama Customer'),
-                TextColumn::make('tanggal_sewa')->label('Tanggal Sewa')->date(),
-                TextColumn::make('lama_peminjaman')->label('Durasi Sewa')->formatStateUsing(fn ($state) => $state . ' hari'),
-                TextColumn::make('tanggal_kembali')->label('Tanggal Kembali')->date(),
-                TextColumn::make('total_harga')->label('Total Harga Sewa')->money('IDR', true),
-                TextColumn::make('denda')->label('Denda')->money('IDR', true),
+                TextColumn::make('kode_transaksi')->label('Kode Transaksi')->sortable('desc')->copyable()->searchable(),
+                TextColumn::make('mobil.nama_mobil')->label('Nama Mobil')->copyable()->searchable(),
+                TextColumn::make('customer.nama_customer')->label('Nama Customer')->copyable()->searchable(),
+                TextColumn::make('tanggal_sewa')->label('Tanggal Sewa')->date()->copyable(),
+                TextColumn::make('lama_peminjaman')->label('Durasi Sewa')->formatStateUsing(fn ($state) => $state . ' hari')->copyable(),
+                TextColumn::make('tanggal_kembali')->label('Tanggal Kembali')->date()->copyable(),
+                TextColumn::make('total_harga')->label('Total Harga Sewa')->money('IDR', true)->copyable(),
+                TextColumn::make('denda')->label('Denda')->money('IDR', true)->copyable(),
                 TextColumn::make('status')
                     ->label('Status')
                     ->searchable()
@@ -72,13 +74,40 @@ class KembaliResource extends Resource
             ])
             ->actions([
                 // Tables\Actions\EditAction::make(),
-                // Tables\Actions\ViewAction::make(),
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ]);
+    }
+
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Section::make('Informasi Pengembalian Mobil')
+                    ->schema([
+                        TextEntry::make('kode_transaksi')->label('Kode Transaksi')->copyable(),
+                        TextEntry::make('mobil.nama_mobil')->label('Nama Mobil')->copyable(),
+                        TextEntry::make('customer.nama_customer')->label('Nama Customer')->copyable(),
+                        TextEntry::make('tanggal_sewa')->label('Tanggal Sewa')->date(),
+                        TextEntry::make('lama_peminjaman')->label('Durasi Sewa')->formatStateUsing(fn ($state) => $state . ' hari'),
+                        TextEntry::make('tanggal_kembali')->label('Tanggal Kembali')->date(),
+                        TextEntry::make('total_harga')->label('Total Harga Sewa')->money('IDR', true),
+                        TextEntry::make('denda')->label('Denda')->money('IDR', true)->helperText('Denda yang dikenakan jika melewati batas waktu sewa'),
+                        TextEntry::make('status')
+                            ->label('Status')
+                            ->badge()
+                            ->color(fn(string $state): string => match (strtolower($state)) {
+                                'kembali' => 'success',
+                                'sewa' => 'warning',
+                            }),
+                    ])
+                    ->columns(2), // Menampilkan dalam 2 kolom
             ]);
     }
 
@@ -95,6 +124,7 @@ class KembaliResource extends Resource
             'index' => Pages\ListKembalis::route('/'),
             'create' => Pages\CreateKembali::route('/create'),
             'edit' => Pages\EditKembali::route('/{record}/edit'),
+            'view' => Pages\ViewKembali::route('/{record}'),
         ];
     }
 }

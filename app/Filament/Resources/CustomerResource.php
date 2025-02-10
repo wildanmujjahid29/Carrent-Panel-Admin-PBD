@@ -117,7 +117,6 @@ class CustomerResource extends Resource
                 TextColumn::make('full_address')
                     ->label('Alamat')
                     ->alignCenter()
-                    ->searchable()
                     ->copyable(true)
                     ->getStateUsing(fn ($record) => 
                         $record->alamat . ', RT ' . $record->rt . ', RW ' . $record->rw . ', ' . 
@@ -125,13 +124,11 @@ class CustomerResource extends Resource
                     ),
                 TextColumn::make('kota')
                     ->label('Kota')
-                    ->searchable()
                     ->sortable()
                     ->copyable(true),
                 TextColumn::make('kode_pos')
                     ->label('Kode Pos')
                     ->default('-')
-                    ->searchable()
                     ->copyable(true),
                 TextColumn::make('no_hp')
                     ->label('No HP')

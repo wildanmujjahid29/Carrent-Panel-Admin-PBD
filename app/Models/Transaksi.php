@@ -11,21 +11,11 @@ class Transaksi extends Model
 
     protected $guarded = [];
 
-    /**
-     * Get the user that owns the Transaksi
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function mobil(): BelongsTo
     {
         return $this->belongsTo(Mobil::class);
     }
 
-    /**
-     * Get the customer that owns the Transaksi
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);

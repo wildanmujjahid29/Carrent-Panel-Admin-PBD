@@ -218,8 +218,7 @@ class TransaksiResource extends Resource
                             'status' => 'kembali',
                             'tanggal_kembali' => $data['tanggal_kembali'],
                         ]);
-                        return redirect(url('/admin/kembali'));
-                        ;
+                        return redirect()->route('filament.admin.resources.kembali.view', ['record' => $record->id]);
                     })
                     ->requiresConfirmation()
                     ->modalHeading('Kembalikan Mobil ?')
@@ -246,6 +245,7 @@ class TransaksiResource extends Resource
                             ->color('danger')
                             ->iconColor('danger'),
                     ),
+                
             ])
 
 
@@ -253,6 +253,7 @@ class TransaksiResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+
             ]);
 
     }

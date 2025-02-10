@@ -10,6 +10,7 @@ class BarChart extends ChartWidget
 {
     protected static ?string $heading = 'Mobil Paling Banyak Disewa';
 
+    protected static ?int $sort = 2;
     protected function getData(): array
     {
         // Query untuk mendapatkan 5 mobil paling banyak disewa
