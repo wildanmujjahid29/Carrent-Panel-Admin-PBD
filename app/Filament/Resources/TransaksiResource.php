@@ -77,7 +77,8 @@ class TransaksiResource extends Resource
                     ->schema([
                         Select::make('mobil_id')
                             ->relationship('mobil', 'nama_mobil', function (Builder $query) {
-                                return $query->where('status', 'tersedia');
+                                return $query->where('status', 'tersedia')
+                                ->selectRaw("id, CONCAT(nama_mobil, ' - ', plat_nomor) as nama_mobil");
                             })
                             ->required()
                             ->live()
@@ -155,6 +156,7 @@ class TransaksiResource extends Resource
             ->columns([
                 TextColumn::make('kode_transaksi')->searchable(),
                 TextColumn::make('mobil.nama_mobil')->searchable(),
+                TextColumn::make('mobil.plat_nomor')->searchable()->label('Plat Nomor'),
                 TextColumn::make('customer.nama_customer')->searchable(),
                 TextColumn::make('tanggal_sewa')->date(),
                 TextColumn::make('lama_peminjaman')->label('Durasi Sewa')->formatStateUsing(fn($state) => $state . ' hari'),
