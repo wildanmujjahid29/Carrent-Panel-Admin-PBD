@@ -7,8 +7,10 @@ use Filament\Tables;
 use Filament\Forms\Form;
 use App\Models\Transaksi;
 use Filament\Tables\Table;
+use Illuminate\Support\Carbon;
 use App\Models\TransaksiDetail;
 use Filament\Resources\Resource;
+use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
@@ -17,6 +19,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Actions\ExportAction;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Exports\TransaksiExporter;
+use Filament\Tables\Filters\DateRangeFilter;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\TransaksiDetailResource\Pages;
 use App\Filament\Resources\TransaksiDetailResource\RelationManagers;
@@ -102,7 +105,27 @@ class TransaksiDetailResource extends Resource
                 TextColumn::make('denda')->label('Denda')->money('IDR', true)->copyable(),
             ])
             ->filters([
-                //
+                Filter::make('tanggal_sewa')
+                ->form([
+                    DatePicker::make('from')->label('Dari'),
+                    DatePicker::make('to')->label('Sampai'),
+                ])
+                ->query(function ($query, $data) {
+                    return $query
+                        ->when($data['from'], fn ($q) => $q->whereDate('tanggal_sewa', '>=', $data['from']))
+                        ->when($data['to'], fn ($q) => $q->whereDate('tanggal_sewa', '<=', $data['to']));
+                })
+                ->label('Rentang Tanggal Sewa')
+                ->indicateUsing(function ($data) {
+                    if ($data['from'] && $data['to']) {
+                        return 'Rentang Tanggal Sewa: ' . $data['from'] . ' - ' . $data['to'];
+                    } elseif ($data['from']) {
+                        return 'Tanggal Sewa dari: ' . $data['from'];
+                    } elseif ($data['to']) {
+                        return 'Tanggal Sewa sampai: ' . $data['to'];
+                    }
+                    return null;
+                }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -115,7 +138,8 @@ class TransaksiDetailResource extends Resource
             ])
             ->headerActions([
                 ExportAction::make('Export Transaksi')
-                    ->exporter(TransaksiExporter::class),
+                    ->exporter(TransaksiExporter::class)
+                    ->color('success'),
             ]);
     }
 
