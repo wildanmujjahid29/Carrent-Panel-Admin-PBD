@@ -12,6 +12,7 @@ use Filament\Resources\Resource;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\QueryException;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\ImageColumn;
@@ -202,10 +203,35 @@ class MobilResource extends Resource
                 Tables\Actions\EditAction::make()
                     ->label(false)
                     ->tooltip('Ubah Data'),
-                Tables\Actions\DeleteAction::make()
+                    Tables\Actions\DeleteAction::make()
                     ->label(false)
                     ->tooltip('Hapus Data')
                     ->modalHeading('Data Mobil Akan Dihapus')
+                    ->action(function (Mobil $record) {
+                        try {
+                            // Hapus mobil
+                            $record->delete();
+                
+                            // Tampilkan notifikasi sukses
+                            Notification::make()
+                                ->success()
+                                ->title('Data Mobil Dihapus')
+                                ->body('Data mobil telah berhasil dihapus dari tabel.')
+                                ->icon('heroicon-o-document-minus')
+                                ->color('danger')
+                                ->iconColor('danger')
+                                ->send();
+                        } catch (QueryException $e) {
+                            // Tangkap exception dan tampilkan notifikasi gagal
+                            Notification::make()
+                                ->title('Gagal Menghapus')
+                                ->body('Maaf, mobil tidak dapat dihapus karena masih terkait dengan data transaksi.')
+                                ->icon('heroicon-o-x-mark')
+                                ->duration(5000)
+                                ->danger()
+                                ->send();
+                        }
+                    })
                     ->successNotification(
                         Notification::make()
                             ->success()
@@ -213,7 +239,7 @@ class MobilResource extends Resource
                             ->body('Data mobil telah berhasil dihapus dari tabel.')
                             ->icon('heroicon-o-document-minus')
                             ->color('danger')
-                            ->iconColor('danger'),
+                            ->iconColor('danger')
                     ),
             ])
             ->bulkActions([
