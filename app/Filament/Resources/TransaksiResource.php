@@ -234,19 +234,19 @@ class TransaksiResource extends Resource
                 Tables\Actions\EditAction::make()
                     ->label(false)
                     ->tooltip('Edit Transaksi'),
-                Tables\Actions\DeleteAction::make()
-                    ->label(false)
-                    ->tooltip('Hapus Transaksi')
-                    ->modalHeading('Data Transaksi Sewa Mobil Akan Dihapus')
-                    ->successNotification(
-                        Notification::make()
-                            ->success()
-                            ->title('Transaksi Sewa Dihapus')
-                            ->body('Data transaksi sewa telah berhasil dihapus dari tabel.')
-                            ->icon('heroicon-o-document-minus')
-                            ->color('danger')
-                            ->iconColor('danger'),
-                    ),
+                // Tables\Actions\DeleteAction::make()
+                //     ->label(false)
+                //     ->tooltip('Hapus Transaksi')
+                //     ->modalHeading('Data Transaksi Sewa Mobil Akan Dihapus')
+                //     ->successNotification(
+                //         Notification::make()
+                //             ->success()
+                //             ->title('Transaksi Sewa Dihapus')
+                //             ->body('Data transaksi sewa telah berhasil dihapus dari tabel.')
+                //             ->icon('heroicon-o-document-minus')
+                //             ->color('danger')
+                //             ->iconColor('danger'),
+                //     ),
                 
             ])
 

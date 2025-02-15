@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\KembaliResource\RelationManagers;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\Grid;
 class KembaliResource extends Resource
 {
     protected static ?string $model = Transaksi::class;
@@ -91,23 +92,25 @@ class KembaliResource extends Resource
             ->schema([
                 Section::make('Informasi Pengembalian Mobil')
                     ->schema([
-                        TextEntry::make('kode_transaksi')->label('Kode Transaksi')->copyable(),
-                        TextEntry::make('mobil.nama_mobil')->label('Nama Mobil')->copyable(),
-                        TextEntry::make('customer.nama_customer')->label('Nama Customer')->copyable(),
-                        TextEntry::make('tanggal_sewa')->label('Tanggal Sewa')->date(),
-                        TextEntry::make('lama_peminjaman')->label('Durasi Sewa')->formatStateUsing(fn ($state) => $state . ' hari'),
-                        TextEntry::make('tanggal_kembali')->label('Tanggal Kembali')->date(),
-                        TextEntry::make('total_harga')->label('Total Harga Sewa')->money('IDR', true),
-                        TextEntry::make('denda')->label('Denda')->money('IDR', true)->helperText('Denda yang dikenakan jika melewati batas waktu sewa'),
-                        TextEntry::make('status')
-                            ->label('Status')
-                            ->badge()
-                            ->color(fn(string $state): string => match (strtolower($state)) {
-                                'kembali' => 'success',
-                                'sewa' => 'warning',
-                            }),
-                    ])
-                    ->columns(2), // Menampilkan dalam 2 kolom
+                        Grid::make(2) // Mengatur tata letak dalam 2 kolom
+                            ->schema([
+                                TextEntry::make('kode_transaksi')->label('Kode Transaksi')->copyable(),
+                                TextEntry::make('mobil.nama_mobil')->label('Nama Mobil')->copyable(),
+                                TextEntry::make('customer.nama_customer')->label('Nama Customer')->copyable(),
+                                TextEntry::make('tanggal_sewa')->label('Tanggal Sewa')->date(),
+                                TextEntry::make('lama_peminjaman')->label('Durasi Sewa')->formatStateUsing(fn ($state) => $state . ' hari'),
+                                TextEntry::make('tanggal_kembali')->label('Tanggal Kembali')->date(),
+                                TextEntry::make('total_harga')->label('Total Harga Sewa')->money('IDR', true),
+                                TextEntry::make('denda')->label('Denda')->money('IDR', true)->helperText('Denda yang dikenakan jika melewati batas waktu sewa'),
+                                TextEntry::make('status')
+                                    ->label('Status')
+                                    ->badge()
+                                    ->color(fn(string $state): string => match (strtolower($state)) {
+                                        'kembali' => 'success',
+                                        'sewa' => 'warning',
+                                    }),
+                            ]),
+                    ]),
             ]);
     }
 

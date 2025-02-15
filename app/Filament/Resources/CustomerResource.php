@@ -10,6 +10,7 @@ use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Section;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\QueryException;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\ImageColumn;
@@ -139,23 +140,48 @@ class CustomerResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
-                    ->label(false)
-                    ->tooltip('Ubah Data'),
-                Tables\Actions\DeleteAction::make()
-                    ->label(false)
-                    ->tooltip('Hapus Data')
-                    ->modalHeading('Data Customer Akan Dihapus')
-                    ->successNotification(
-                        Notification::make()
-                            ->success()
-                            ->title('Data Customer Dihapus')
-                            ->body('Data Customer telah berhasil dihapus dari tabel.')
-                            ->icon('heroicon-o-document-minus')
-                            ->color('danger')
-                            ->iconColor('danger'),
-                    ),
-            ])
+            Tables\Actions\EditAction::make()
+            ->label(false)
+            ->tooltip('Ubah Data'),
+            Tables\Actions\DeleteAction::make()
+            ->label(false)
+            ->tooltip('Hapus Data')
+            ->modalHeading('Data Customer Akan Dihapus')
+            ->action(function (Customer $record) {
+                try {
+                    // Hapus mobil
+                    $record->delete();
+
+                    // Tampilkan notifikasi sukses
+                    Notification::make()
+                        ->success()
+                        ->title('Data Customer Dihapus')
+                        ->body('Data Customer telah berhasil dihapus dari tabel.')
+                        ->icon('heroicon-o-document-minus')
+                        ->color('danger')
+                        ->iconColor('danger')
+                        ->send();
+                } catch (QueryException $e) {
+                    // Tangkap exception dan tampilkan notifikasi gagal
+                    Notification::make()
+                        ->title('Gagal Menghapus')
+                        ->body('Maaf, Customer tidak dapat dihapus karena masih terkait dengan data transaksi.')
+                        ->icon('heroicon-o-x-mark')
+                        ->duration(5000)
+                        ->danger()
+                        ->send();
+                }
+            })
+            ->successNotification(
+                Notification::make()
+                    ->success()
+                    ->title('Data Customer Dihapus')
+                    ->body('Data customer telah berhasil dihapus dari tabel.')
+                    ->icon('heroicon-o-document-minus')
+                    ->color('danger')
+                    ->iconColor('danger')
+            ),
+                        ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
